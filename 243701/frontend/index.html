@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Notification Dashboard</title>
+        <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .type {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .placement { color: #00ffcc; }
+    .result { color: #ffcc00; }
+    .event { color: #ff6b6b; }
+
+    .message {
+      margin: 5px 0;
+    }
+
+    .time {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <h1>📢 Notification Dashboard</h1>
+            <div id="list"></div>
+        </div>
+
+        <script>
+async function loadData() {
+  try {
+    const res = await fetch("http://20.207.122.201/evaluation-service/notifications");
+    const data = await res.json();
+
+    function getPriority(type) {
+      if (type === "Placement") return 3;
+      if (type === "Result") return 2;
+      return 1;
+    }
+
+    const sorted = data.notifications
+      .sort((a, b) => {
+        if (getPriority(b.Type) !== getPriority(a.Type)) {
+          return getPriority(b.Type) - getPriority(a.Type);
+        }
+        return new Date(b.Timestamp) - new Date(a.Timestamp);
+      })
+      .slice(0, 10);
+
+    const list = document.getElementById("list");
+
+    sorted.forEach(n => {
+      const div = document.createElement("div");
+      div.className = "card";
+
+      const typeClass = n.Type.toLowerCase();
+
+      div.innerHTML = `
+        <div class="type ${typeClass}">${n.Type}</div>
+        <div class="message">${n.Message}</div>
+        <div class="time">${n.Timestamp}</div>
+      `;
+
+      list.appendChild(div);
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+loadData();
+</script>
+
+    </body>
+</html>
