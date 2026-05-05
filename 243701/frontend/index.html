@@ -3,68 +3,103 @@
     <head>
         <meta charset="UTF-8" />
         <title>Notification Dashboard</title>
+
         <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: white;
-    }
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+}
 
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-    }
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 12px;
-      backdrop-filter: blur(10px);
-      transition: transform 0.2s;
-    }
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    .card:hover {
-      transform: scale(1.02);
-    }
+button {
+  padding: 8px 12px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .type {
-      font-weight: bold;
-      font-size: 14px;
-    }
+.refresh { background: #00c6ff; color: black; }
+.clear { background: #ff4d4d; color: white; }
+.done { background: #28a745; color: white; margin-top: 5px; }
 
-    .placement { color: #00ffcc; }
-    .result { color: #ffcc00; }
-    .event { color: #ff6b6b; }
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s;
+}
 
-    .message {
-      margin: 5px 0;
-    }
+.card:hover {
+  transform: scale(1.02);
+}
 
-    .time {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-  </style>
+.type {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.placement { color: #00ffcc; }
+.result { color: #ffcc00; }
+.event { color: #ff6b6b; }
+
+.message {
+  margin: 5px 0;
+}
+
+.time {
+  font-size: 12px;
+  opacity: 0.8;
+}
+</style>
     </head>
+
     <body>
 
         <div class="container">
             <h1>📢 Notification Dashboard</h1>
+
+            <div class="controls">
+                <button class="refresh" onclick="loadData()">🔄 Refresh</button>
+                <button class="clear" onclick="clearNotifications()">🗑 Clear
+                    All</button>
+            </div>
+
             <div id="list"></div>
         </div>
 
         <script>
 async function loadData() {
   try {
-    const res = await fetch("http://20.207.122.201/evaluation-service/notifications");
+    let res;
+
+    // Try external API
+    try {
+      res = await fetch("http://20.207.122.201/evaluation-service/notifications");
+    } catch {
+      res = await fetch("/notifications");
+    }
+
     const data = await res.json();
 
     function getPriority(type) {
@@ -83,6 +118,7 @@ async function loadData() {
       .slice(0, 10);
 
     const list = document.getElementById("list");
+    list.innerHTML = "";
 
     sorted.forEach(n => {
       const div = document.createElement("div");
@@ -94,6 +130,7 @@ async function loadData() {
         <div class="type ${typeClass}">${n.Type}</div>
         <div class="message">${n.Message}</div>
         <div class="time">${n.Timestamp}</div>
+        <button class="done" onclick="markAsDone(this.parentElement)">✔ Mark as Done</button>
       `;
 
       list.appendChild(div);
@@ -104,6 +141,16 @@ async function loadData() {
   }
 }
 
+function clearNotifications() {
+  document.getElementById("list").innerHTML = "";
+}
+
+function markAsDone(element) {
+  element.style.opacity = "0.5";
+  element.style.textDecoration = "line-through";
+}
+
+// Load on start
 loadData();
 </script>
 
