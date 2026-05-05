@@ -27,5 +27,5 @@ This project demonstrates REST API design, logging middleware integration, and a
 ---
 
 ## 📂 Project Structure
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/09fa8cd7-aabc-4fe8-990d-68086e210810" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/95f34bba-2200-41e8-9cf9-3e704a6a36f7" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e129668b-72cd-43f6-a4d2-927ddd7fa55f" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/690131df-beea-4b8a-8303-278e1e55d968" />
